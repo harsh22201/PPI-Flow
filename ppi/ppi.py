@@ -16,7 +16,7 @@ class LPPI:
 
     def __init__(self, 
                  k=10, 
-                 confidence=0.95, 
+                 confidence=0.90, 
                  embedder_model="all-MiniLM-L6-v2", 
         ):
         """
@@ -144,7 +144,7 @@ class LPPI:
     # ----------------------------------------------------------------------
     # CALIBRATE: rectify LLM predictions on new data
     # ----------------------------------------------------------------------
-    def calibrate(self, df, target_text = "target"):
+    def calibrate(self, df, target_text = "target", clip_range=None):
         """
         calibrate rectified scores.
 
@@ -189,6 +189,6 @@ class LPPI:
                 f_x0 = df.iloc[i][f"{score_col}_llm"]
                 y_rect = f_x0 - delta_hat
 
-                out.at[i, f"{score_col}_rectified"] = y_rect
+                out.at[i, f"{score_col}_rectified"] = np.clip(y_rect, clip_range[0], clip_range[1]) if clip_range is not None else y_rect
                 out.at[i, f"{score_col}_ci_size"] = ci_size
         return out

@@ -102,6 +102,45 @@ class Taxonomy:
 
         dfs(self.root)
         return leaves
+    
+    def to_leaf(self, path_str: str) -> TaxonomyNode:
+        """
+        Convert a taxonomy string into a TaxonomyNode leaf.
+
+        Expected format:
+            "Level1 >> Level2 >> Level3"
+
+        Returns:
+            TaxonomyNode
+
+        Raises:
+            ValueError if path is invalid or not a leaf node.
+        """
+
+        if not path_str or not isinstance(path_str, str):
+            raise ValueError("Invalid taxonomy path string.")
+
+        parts = [p.strip() for p in path_str.split(">>") if p.strip()]
+
+        if not parts:
+            raise ValueError("Empty taxonomy path.")
+
+        current = self.root
+
+        for idx, part in enumerate(parts):
+            if part not in current.children:
+                raise ValueError(
+                    f"Invalid taxonomy path at level {idx}: '{part}' not found."
+                )
+            current = current.children[part]
+
+        # Ensure it is a leaf node
+        if current.children:
+            raise ValueError(
+                f"Path does not point to a leaf node: {path_str}"
+            )
+
+        return current
 
     def print_tree(self, node=None, indent=0):
         if node is None:
@@ -113,8 +152,14 @@ class Taxonomy:
 
 
 if __name__ == "__main__":
-    taxonomy = Taxonomy("C:\\Users\\Harsh\\Desktop\\PPI Flow\\taxonomy\\demo.txt")
+    taxonomy = Taxonomy("C:\\Users\\Harsh\\Desktop\\PPI Flow\\taxonomy\\PCv3.txt")
     taxonomy.print_tree()
+    node = taxonomy.to_leaf(
+    "Chemistry >> The d- and f-Block Elements >> Lanthanoids"
+)
+
+    print(node)
+    print(node.to_json())
 
     leaves = taxonomy.leaf_nodes
     print("\nLeaf Nodes:")

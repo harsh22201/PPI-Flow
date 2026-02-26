@@ -9,7 +9,7 @@ import pandas as pd
 
 def main(epochs: int):
     
-    questions = load_target_text("C:\\Users\\Harsh\\Desktop\\PPI Flow\\data\\d2\\train.csv", target_column = "eng", top_n=100)
+    questions = load_target_text("C:\\Users\\Harsh\\Desktop\\PPI Flow\\data\\d1\\train.csv", target_column = "eng", top_n=100)
     taxonomy = Taxonomy("C:\\Users\\Harsh\\Desktop\\PPI Flow\\taxonomy\\PCv3.txt")
 
     tagger = TagRec()
@@ -19,7 +19,7 @@ def main(epochs: int):
     llm_judge = LLMJudge(model="openai/gpt-oss-120b")
 
     lppi = LPPI()
-    lppi_gold = pd.read_pickle("C:\\Users\\Harsh\\Desktop\\PPI Flow\\data\\d2\\lppi_gold.pkl")
+    lppi_gold = pd.read_pickle("C:\\Users\\Harsh\\Desktop\\PPI Flow\\data\\d1\\lppi_gold1.pkl")
     lppi.fit(lppi_gold, score_cols=["Subject_validity", "Chapter_validity", "Topic_validity"])
     
     for epoch in range(epochs):
